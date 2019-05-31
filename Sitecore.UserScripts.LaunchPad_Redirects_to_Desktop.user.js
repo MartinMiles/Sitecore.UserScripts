@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Launchpad redirects to shell opening Content Editor
+// @name         Launchpad redirects to shell (Sitecore Desktop)
 // @namespace    http://tampermonkey.net/
 // @version      0.1
 // @description  try to take over the world!
