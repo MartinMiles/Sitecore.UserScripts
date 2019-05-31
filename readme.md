@@ -16,7 +16,7 @@ Once installed, put the scripts into an extension and enjoy ;)
 
 ## Related blog posts
 
-* [Boosting productivity with Sitecore by employing user scripts on an example of SXA activities](http://bloghttp://blog/post/boosting-productivity-with-sitecore-by-employing-user-scripts-on-an-example-of-sxa-activities/post/boosting-productivity-with-sitecore-by-employing-user-scripts-on-an-example-of-sxa-activities) - explains how the above work and how to create custom scripts
+* [Boosting productivity with Sitecore by employing user scripts on an example of SXA activities](http://blog.MartinMiles.net/post/boosting-productivity-with-sitecore-by-employing-user-scripts-on-an-example-of-sxa-activities/post/boosting-productivity-with-sitecore-by-employing-user-scripts-on-an-example-of-sxa-activities) - explains how the above work and how to create custom scripts
 
 ### Other notes
 
