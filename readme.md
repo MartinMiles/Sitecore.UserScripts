@@ -18,13 +18,23 @@ Despite Google Chrome supports these scripts out of the box and treats them as r
 
 Once installed, put the scripts into an extension and enjoy ;)
 
+## Demo
 
-![Sitecore User Script demo](https://raw.githubusercontent.com/wiki/MartinMiles/Sitecore.UserScripts/images/Pre-load_content_editors.gif "Sitecore User Script demo") 
+### Preload Content Editor
+![Preload Content Editor script demo](https://raw.githubusercontent.com/wiki/MartinMiles/Sitecore.UserScripts/images/Pre-load_content_editors.gif "Preload Content Editor script demo") 
+
+
+### Preview Multiselect Fields Values
+![Preview Multiselect Fields Values script demo](https://raw.githubusercontent.com/wiki/MartinMiles/Sitecore.UserScripts/images/Preview_multiselect_fields.gif "Preview Multiselect Fields Values script demo") 
+
 
 
 ## Related blog posts
 
 * [Boosting productivity with Sitecore by employing user scripts on an example of SXA activities](http://blog.MartinMiles.net/post/boosting-productivity-with-sitecore-by-employing-user-scripts-on-an-example-of-sxa-activities/post/boosting-productivity-with-sitecore-by-employing-user-scripts-on-an-example-of-sxa-activities) - explains how the above work and how to create custom scripts
+
+* [Enhancing Treelist with a lookup feature for productivity. Two approaches, same goal: browser user script and serverside](http://blog.MartinMiles.net/post/enhancing-treelist-with-a-lookup-feature-for-productivity-two-approaches-same-goal-browser-user-script-and-serverside) - an easy multiselest fields enhancer (Treelist, Multilist) that allows previewing selected item in a new tab, quickly and affectively
+
 
 ### Other notes
 
