@@ -4,10 +4,11 @@ A collection of user script that work with Sitecore, helping you to extend defau
 
 ## What's inside?
 
-There are currently 3 script which you can combine (all or partly), or just use individually:
+There are currently 4 script which you can combine (all or partly), or just use individually:
 * [Autologin](https://github.com/MartinMiles/Sitecore.UserScripts/blob/master/Sitecore.UserScripts.Autologin.user.js) - automatically logs into Sitecore, especially helpful on session timeouts
 * [LaunchPad_Redirects_to_Desktop](https://github.com/MartinMiles/Sitecore.UserScripts/blob/master/Sitecore.UserScripts.LaunchPad_Redirects_to_Desktop.user.js) - redirects you from Launchpad to shell (Sitecore Desktop)
 * [Preload_Content_Editors_For_SXA](https://github.com/MartinMiles/Sitecore.UserScripts/blob/master/Sitecore.UserScripts.Preload_Content_Editors_For_SXA.user.js) - this script loads 6 Content Editor windows in Sitecore and preloads each with specified items, configurable.
+* [Enhance Multilist and Treelist for values lookup](https://github.com/MartinMiles/Sitecore.UserScripts/blob/master/Sitecore.UserScripts.Enhance_Multiliselect.user.js) - enhancing Treelist and Miltilist fields with a lookup feature for productivity by hitting ENTER os the selected item
 
 
 ## Making it work
