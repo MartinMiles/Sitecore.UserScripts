@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Temporal opens
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.1
 // @description  This script loads 6 Content Editor windows in Sitecore and preloads each with specified items
 // @author       Martin Miles
 // @match        */sitecore/shell/default.aspx*
@@ -53,66 +53,66 @@
     async function execute() {
         var args;
 
-        await startPromise();
+        await clickStart();
         await loadContentEditor();
         args = await getContentEditor();
         searchValue(args, items.rules);
-        args = await clickId(args, "{1057C235-C5C0-4EB7-8F77-EA51EB9E20EE}");
+        args = await expand(args, "{1057C235-C5C0-4EB7-8F77-EA51EB9E20EE}");
 
-        await startPromise();
+        await clickStart();
         await loadContentEditor();
         args = await getContentEditor();
-        args = await clickId(args, items.content);
-        args = await clickId(args, items.content_tenant);
-        args = await clickId(args, items.content_site);
-        args = await clickId(args, items.content_site_home);
+        args = await expand(args, items.content);
+        args = await expand(args, items.content_tenant);
+        args = await expand(args, items.content_site);
+        args = await expand(args, items.content_site_home);
         args = await selectItem(args, items.content_site_home);
 
-        args = await startPromise(args);
+        args = await clickStart(args);
         args = await loadContentEditor(args);
         args = await getContentEditor(args);
-        args = await clickId(args, items.content);
-        args = await clickId(args, items.content_tenant);
-        args = await clickId(args, items.content_site);
-        args = await clickId(args, items.content_site_data);
+        args = await expand(args, items.content);
+        args = await expand(args, items.content_tenant);
+        args = await expand(args, items.content_site);
+        args = await expand(args, items.content_site_data);
         args = await selectItem(args, items.content_site_data);
 
-        args = await startPromise(args);
+        args = await clickStart(args);
         args = await loadContentEditor(args);
         args = await getContentEditor(args);
-        args = await clickId(args, items.content);
-        args = await clickId(args, items.content_tenant);
-        args = await clickId(args, items.content_site);
-        args = await clickId(args, items.content_site_presentation);
-        args = await clickId(args, items.content_site_presentation_renderingVariants);
+        args = await expand(args, items.content);
+        args = await expand(args, items.content_tenant);
+        args = await expand(args, items.content_site);
+        args = await expand(args, items.content_site_presentation);
+        args = await expand(args, items.content_site_presentation_renderingVariants);
         args = await selectItem(args, items.content_site_presentation_renderingVariants);
 
-        args = await startPromise(args);
+        args = await clickStart(args);
         args = await loadContentEditor(args);
         args = await getContentEditor(args);
-        args = await clickId(args, items.layout);
-        args = await clickId(args, items.renderings);
-        args = await clickId(args, items.feature);
-        args = await clickId(args, items.renderings_tenant);
-        args = await clickId(args, items.renderings_tenant_components);
+        args = await expand(args, items.layout);
+        args = await expand(args, items.renderings);
+        args = await expand(args, items.feature);
+        args = await expand(args, items.renderings_tenant);
+        args = await expand(args, items.renderings_tenant_components);
         args = await selectItem(args, items.renderings_tenant_components);
 
-        args = await startPromise(args);
+        args = await clickStart(args);
         args = await loadContentEditor(args);
         args = await getContentEditor(args);
-        args = await clickId(args, items.media);
-        args = await clickId(args, items.media_project);
-        args = await clickId(args, items.media_project_tenant);
-        args = await clickId(args, items.media_project_tenant_site);
+        args = await expand(args, items.media);
+        args = await expand(args, items.media_project);
+        args = await expand(args, items.media_project_tenant);
+        args = await expand(args, items.media_project_tenant_site);
         args = await selectItem(args, items.media_project_tenant_site);
 
-        args = await startPromise(args);
+        args = await clickStart(args);
         args = await loadContentEditor(args);
         args = await getContentEditor(args);
-        args = await clickId(args, items.templates);
-        args = await clickId(args, items.templates_project);
-        args = await clickId(args, items.templates_project_tenant);
-        args = await clickId(args, items.templates_project_tenant_site);
+        args = await expand(args, items.templates);
+        args = await expand(args, items.templates_project);
+        args = await expand(args, items.templates_project_tenant);
+        args = await expand(args, items.templates_project_tenant_site);
         args = await selectItem(args, items.templates_project_tenant_site);
     }
 
@@ -122,7 +122,7 @@
     // Actual business logic comes below
     //
     //////////////////////////////////////
-    var startPromise = function (args) {
+    var clickStart = function (args) {
         return new Promise(function (resolve, reject) {
 
             log('start Promise');
@@ -137,7 +137,7 @@
 
                     clearInterval(interval1);
 
-                    log('startPromise resolved');
+                    log('clickStart resolved');
                     resolve(args);
                 }
             }, settings.interval);
@@ -150,11 +150,11 @@
             if (args) { log(args); }
 
             var css = "scStartMenuLeftOption";
-            var interval2 = setInterval(function () {
+            var interval = setInterval(function () {
                 if (findElement(window, css, true)) {
                     var ce = findElement(window, css, true);
                     ce.click();
-                    clearInterval(interval2);
+                    clearInterval(interval);
 
                     log('loadContentEditor resolved');
                     resolve(args);
@@ -181,45 +181,40 @@
                     let found = getLastByClass(cssA, document);
                     let iframeWindow = getIframeWindow(found);
 
-                    let changed = !args || found.id != args.prevTd;
 
-                    //found.click();
-
-
-                    if (iframeWindow.document.readyState == 'complete' /*&& changed*/ && findElement(iframeWindow, 'scFlexColumnContainer', true)) {
+                    if (iframeWindow.document.readyState == 'complete' && findElement(iframeWindow, 'scFlexColumnContainer', true)) {
                         clearInterval(interval);
 
                         log('getContentEditor resolved: ' + found.id);
-                        resolve({ iframeWindow: iframeWindow, id: null, prevTd: found.id });
+                        resolve({ iframeWindow: iframeWindow, id: null });
                     }
                 }
             }, settings.interval);
         });
     }
 
-    var clickId = function (args, guid) {
+    var expand = function (args, guid) {
 
         args.id = "Tree_Glyph_" + processGuid(guid);
-        log('clickId: ' + args.id);
+        log('expand: ' + args.id);
 
         return new Promise(function (resolve, reject) {
             var checkExist = setInterval(function () {
 
-                //var wnd = args && args.iframeWindow ? args.iframeWindow : window;
                 var wnd = args.iframeWindow;
 
-                if (findElement(wnd, args.id) != null) {
-
-                    var element = findElement(wnd, args.id);
+                let element = findElement(wnd, args.id);
+                if (element != null) {
 
                     if (element.src.includes('_collapsed.')) {
+
+                        clearInterval(checkExist);
+
                         element.click();
+
+                        log('expand resolved.');
+                        resolve(args);
                     }
-
-                    clearInterval(checkExist);
-
-                    log('clickId resolved.');
-                    resolve(args);
                 }
             }, settings.interval);
         });
@@ -228,62 +223,53 @@
     var selectItem = function (args, guid) {
         return new Promise(function (resolve, reject) {
 
-            //var checkExist = setInterval(function () {
+            var id = "Tree_Node_" + processGuid(guid);
+            log('selectItem: ' + guid);
 
-                //var wnd = args && args.iframeWindow ? args.iframeWindow : window;
+            if (args && findElement(args.iframeWindow, id) != null) {
 
-                if (args) {
+                var element = findElement(args.iframeWindow, id);
+                element.click();
 
-                    //log('selectItem - args.iframeWindow: ' + args.iframeWindow);
-                    var id = "Tree_Node_" + processGuid(guid);;  //args.id.replace(new RegExp('Glyph', 'g'), 'Node');
-                    //log('selectItem - args.id: ' + args.id);
+                var interval = setInterval(function () {
 
-                    log('selectItem: ' + guid);
+                    if (element.classList.contains('scContentTreeNodeActive')) {
+                        clearInterval(interval);
 
-                    if (findElement(args.iframeWindow, id) != null) {
-
-                        var element = findElement(args.iframeWindow, id);
-                        element.click();
-
-                        var checkSelected = setInterval(function () {
-
-                            if (element.classList.contains('scContentTreeNodeActive')) {
-                                clearInterval(checkSelected);
-
-                                log('selectItem resolved');
-                                resolve(args);
-                            }
-                        }, settings.interval);
+                        log('selectItem resolved');
+                        resolve(args);
                     }
-                }
-            //}, settings.interval);
+                }, settings.interval);
+            }
         });
     }
 
     var searchValue = function (args, term) {
         return new Promise(function (resolve, reject) {
-            if (args) {
-                log('searchValue: ' + term);
+            log('searchValue: ' + term);
 
-                var searchbox = findElement(args.iframeWindow, "TreeSearch");
+            if (args) {
+                let wnd = args.iframeWindow;
+
+                var searchbox = findElement(wnd, "TreeSearch");
 
                 if (searchbox) {
                     searchbox.focus();
                     searchbox.value = term;
 
-                    var searchButton = findElement(args.iframeWindow, 'scSearchButton', true);
+                    var searchButton = findElement(wnd, 'scSearchButton', true);
                     if (searchButton) {
                         searchButton.click();
 
                         var checkSelected = setInterval(function () {
 
-                            var result = getByClassAndValue('scSearchCategory', 'Direct Hit', args.iframeWindow.document);
+                            var result = getByClassAndValue('scSearchCategory', 'Direct Hit', wnd.document);
                             if (result) {
                                 clearInterval(checkSelected);
 
                                 result.nextSibling.firstChild.click();
 
-                                let closeButton = args.iframeWindow.document.querySelector('#SearchHeader a');
+                                let closeButton = wnd.document.querySelector('#SearchHeader a');
                                 closeButton.click();
 
                                 log('searchValue resolved');
