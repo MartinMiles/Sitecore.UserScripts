@@ -45,19 +45,67 @@
         templates_project_tenant_site: "{B0CB1FFC-5293-4583-A7CC-923B1A9009CB}"
     };
 
+    const ribbon = {
+        strip: {
+            home: 'HomeStrip',
+            navigate: 'NavigateStrip',
+            review: 'ReviewStrip',
+            analyze: 'AnalyticsStrip',
+            publish: 'PublishStrip',
+            versions: 'VersionsStrip',
+            configure: 'ConfigureStrip',
+            presentation: 'PresentationStrip',
+            security: 'SecurityStrip',
+            view: 'ViewStrip',
+            my: 'MyToolbarStrip'
+        }
+    };
+
     //////////////////////////////////////
     //
     // Scenario to be run
     //
     //////////////////////////////////////
-    async function execute() {
+    async function publish_route(guid) {
         var args;
 
         await clickStart();
         await loadContentEditor();
         args = await getContentEditor();
-        searchValue(args, items.rules);
-        args = await expand(args, "{1057C235-C5C0-4EB7-8F77-EA51EB9E20EE}");
+        searchValue(args, guid);
+        args = await expand(args, guid);
+        args = await selectItem(args, guid);
+
+        args = await selectRibbonTab(args, ribbon.strip.publish);
+        let dlg = await publishStrip_Publish(args);
+        await publishStrip_Publish_confirm(dlg);
+        
+        let wzr = await publishStrip_PublishItem(args);
+        publishStrip_PublishDialod_SetParameters(wzr, { smart: true, subitems: true, related: true, allLanguages: true });
+        await publishStrip_PublishDialod_Publish(wzr);
+    }
+    
+    async function iterate_ribbon_tabs() {
+        var args;
+
+        await clickStart();
+        await loadContentEditor();
+        args = await getContentEditor();
+
+        args = await selectRibbonTab(args, ribbon.strip.navigate);
+        args = await selectRibbonTab(args, ribbon.strip.review);
+        args = await selectRibbonTab(args, ribbon.strip.analyze);
+        args = await selectRibbonTab(args, ribbon.strip.publish);
+        args = await selectRibbonTab(args, ribbon.strip.versions);
+        args = await selectRibbonTab(args, ribbon.strip.configure);
+        args = await selectRibbonTab(args, ribbon.strip.presentation);
+        args = await selectRibbonTab(args, ribbon.strip.security);
+        args = await selectRibbonTab(args, ribbon.strip.view);
+        args = await selectRibbonTab(args, ribbon.strip.my);
+    }
+
+    async function execute() {
+        var args;
 
         await clickStart();
         await loadContentEditor();
@@ -122,10 +170,153 @@
     // Actual business logic comes below
     //
     //////////////////////////////////////
+    var publishStrip_Publish = function (args) {
+        return new Promise(function (resolve, reject) {
+
+            log('publishStrip_Publish');
+            if (args) { log(args); }
+            let wnd = args.iframeWindow;
+
+            var button = findButton();
+            button.click();
+           
+            var interval1 = setInterval(function () {
+                var dialogue = findElement(window, 'scFormDialogHeader', true);
+                if (dialogue) {
+            
+                    clearInterval(interval1);
+
+                    log('publishStrip_Publish resolved');
+                    resolve(dialogue.parentElement.parentElement);
+                }
+            }, settings.interval);
+
+            function findButton() {
+                var icon = wnd.document.querySelector('.scRibbonToolbarLargeComboButtonIcon');
+                if (icon.src.includes('/temp/iconcache/office/24x24/publish.png')) {
+                    return icon.parentElement;
+                }
+            }
+        });
+    }
+
+    var publishStrip_PublishSite = function (args) {
+        return new Promise(function (resolve, reject) {
+            // I promise this method to be done
+        });
+    }
+
+    var publishStrip_PublishItem = function (args) {
+        return new Promise(function (resolve, reject) {
+
+            // TODO: unite into enter method
+            log('publishStrip_PublishItem');
+            if (args) { log(args); }
+            let wnd = args.iframeWindow;
+
+            var button = findButton();
+            button.click();
+
+            var interval1 = setInterval(function () {
+                var popup = findElement(window, 'scPopup', true);
+                if (popup) {
+
+                    var menu = findMenu();
+                    menu.click();
+
+                    clearInterval(interval1);
+
+                    var interval2 = setInterval(function () {
+
+                        var dialog = findElement(window, 'scWizardPageContainer', true);
+                        if (dialog) {
+
+                            clearInterval(interval2);
+                            log('publishStrip_PublishItem resolved');
+                            resolve(dialog);
+                        }
+
+                    }, settings.interval);
+                }
+
+            }, settings.interval);
+
+            function findMenu() {
+                let tr;
+                var tds = wnd.document.querySelectorAll('td.scMenuItemIcon');
+                tds.forEach((td) => {
+                    if (td.firstChild.src.includes('/temp/iconcache/office/16x16/window_earth.png')) {
+                        tr = td.parentElement;
+                    }
+                });
+                return tr;
+            }
+
+            function findButton() {
+                return wnd.document.querySelector('.scRibbonToolbarLargeComboButtonBottom,.scPopupOpener');
+            }
+        });
+    }
+
+    var publishStrip_PublishDialod_SetParameters = function (wzr, parameters) {
+        if (parameters.smart) {
+            find('SmartPublish').checked = true;
+        } else {
+            find('Republish').checked = true;
+        }
+
+        find('PublishChildren').checked = parameters.subitems;
+        find('PublishRelatedItems').checked = parameters.related;
+        find('SelectAllLanguages').checked = parameters.allLanguages;
+
+        function find(id) {
+            return wzr.parentElement.querySelector('#' + id);
+        }
+    }
+
+    var publishStrip_PublishDialod_Publish = function (wzr) {
+        return new Promise(function (resolve, reject) {
+
+            log('publishStrip_PublishItem');
+
+            var button = findButton();
+            button.click();
+
+            var interval = setInterval(function () {
+
+                var close = findClose();
+                if (close && !close.disabled) {
+
+                    clearInterval(interval);
+                    close.click();
+                    log('publishStrip_PublishDialod_Publish resolved');
+                    resolve();
+                }
+            }, settings.interval);
+
+            function findButton() {
+                return wzr.parentElement.querySelector('#NextButton');
+            }
+            function findClose() {
+                return wzr.parentElement.querySelector('#CancelButton');
+            }
+        });
+    }
+
+    var publishStrip_Publish_confirm = function (dlg) {
+        return new Promise(function (resolve, reject) {
+            if (dlg) {
+                var ok = dlg.querySelector('#OK'); 
+                ok.click();
+                resolve();
+            }
+        });
+    };
+
     var clickStart = function (args) {
         return new Promise(function (resolve, reject) {
 
-            log('start Promise');
+            log('clickStart');
             if (args) { log(args); }
 
             var id = "StartButton";
@@ -282,12 +473,48 @@
         });
     }
 
+    var selectRibbonTab = function (args, ribbonTab) {
+        return new Promise(function (resolve, reject) {
+            log('selectRibbonTab: ' + ribbonTab);
+
+            if (args) {
+                let wnd = args.iframeWindow;
+
+                let tabName = 'Ribbon' + getSelectedItemId(wnd) + '_Nav_' + ribbonTab;
+
+                var tab = findElement(wnd, tabName);
+
+                var checkSelected = setInterval(function () {
+
+                    tab.click();
+
+                    let stripName = tabName.replace('_Nav_', '_Strip_');
+                    let strip = wnd.document.getElementById(stripName);
+
+                    if (strip.firstChild.className == 'chunk') {
+                        clearInterval(checkSelected);
+                        log('selectRibbonTab resolved');
+                        resolve(args);
+                    }
+
+                }, settings.interval);
+            }
+        });
+    }
+
 
     //////////////////////////////////////
     //
-    // Some helpind functions
+    //    Some helping functions
     //
     //////////////////////////////////////
+    function getSelectedItemId(wnd) {
+
+        var selected = wnd.document.querySelector('.scContentTreeNodeActive');
+        var id = selected.id;
+        return id.replace('Tree_Node_', '');
+    }
+
     function getIframeWindow(td) {
         var frameName = td.id.replace("startbar_application_", "");
         return document.getElementById(frameName).contentWindow;
@@ -360,4 +587,6 @@
 
     // Runs the scenario
     execute();
+    //iterate_ribbon_tabs()
+    //publish_route("{0DE95AE4-41AB-4D01-9EB0-67441B7C2450}");
 })();
